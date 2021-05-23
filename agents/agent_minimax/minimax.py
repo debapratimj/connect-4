@@ -1,12 +1,8 @@
-import pdb
-
-import numpy as np
 import math
 from typing import Tuple, Optional
 import numpy as np
-from scipy.signal import convolve2d
 
-from agents.common import BoardPiece, connected_four, check_end_state, SavedState, PlayerAction, initialize_game_state
+from agents.common import BoardPiece, check_end_state, SavedState, PlayerAction
 
 
 def gen_moves(board: np.ndarray, player: np.int8) -> Tuple[list, list]:
@@ -238,19 +234,19 @@ def heuristic_minimax(board: np.ndarray, player: BoardPiece) -> float:
     cols = board.shape[1]
     rows = board.shape[0]
 
-    # Center Column heuristic 
+    # Center Column Heuristic
     center_array = [int(i) for i in list(board[:, cols // 2])]
     center_count = center_array.count(player)
     value += center_count * 3
 
-    # Horizontal heuristic
+    # Horizontal Heuristic
     for r in range(rows):
         row_array = [int(i) for i in list(board[r, :])]
         for c in range(cols - 3):
             window = row_array[c:c + window_length]
             value += evaluate_window(window, player)
 
-    # Vertical heuristic
+    # Vertical Heuristic
     for c in range(cols):
         col_array = [int(i) for i in list(board[:, c])]
         for r in range(rows - 3):
@@ -272,9 +268,3 @@ def heuristic_minimax(board: np.ndarray, player: BoardPiece) -> float:
     return value
 
 
-board_1 = np.random.choice(3, [6, 7])
-board_config = initialize_game_state()
-board_config[0, 0:4] = BoardPiece(1)
-# print(heuristic_minimax(board_config, 1))
-
-print(evaluate_window([1, 1, 1, 1], 1))
