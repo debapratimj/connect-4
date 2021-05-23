@@ -1,0 +1,2 @@
+from .minimax import vanilla_minimax_gen_move as vanilla_minimax_gen_move
+from .minimax import alpha_beta_minimax_gen_move as alpha_beta_minimax_gen_move

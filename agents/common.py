@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, Callable, Tuple
 import numpy as np
 
 BoardPiece = np.int8  # The data type (dtype) of the board
@@ -7,10 +7,10 @@ NO_PLAYER = BoardPiece(0)  # board[i, j] == NO_PLAYER where the position is empt
 PLAYER1 = BoardPiece(1)  # board[i, j] == PLAYER1 where player 1 (player to move first) has a piece
 PLAYER2 = BoardPiece(2)  # board[i, j] == PLAYER2 where player 2 (player to move second) has a piece
 
-BoardPiece_Print = str  # dtype for string representation of BoardPiece
-NO_PLAYER_Print = str(' ')
-PLAYER1_Print = str('X')
-PLAYER2_Print = str('O')
+BoardPiecePrint = str  # dtype for string representation of BoardPiece
+NO_PLAYER_Print = BoardPiecePrint(' ')
+PLAYER1_Print = BoardPiecePrint('X')
+PLAYER2_Print = BoardPiecePrint('O')
 
 PlayerAction = np.int8  # The column to be played
 
@@ -91,19 +91,18 @@ def apply_player_action(
     Sets board[i, action] = player, where i is the lowest open row. The modified
     board is returned. If copy is True, makes a copy of the board before modifying it.
     """
-
+    board_ = board.copy()
     if copy:
         board = np.copy(board)
     else:
         pass
-    row_index = np.argmin(board[:, action]) == 0
+    row_index = np.where(board[:, action] == 0)[0][0]
 
-    board[row_index,action] = player
-
+    board[row_index, action] = player
+    # print('Selected row is %s' % row_index )
     # Throw error is the move is not valid?
-
+    # print(board_, board)
     return board
-    # raise NotImplementedError()
 
 
 def connected_four(
@@ -173,3 +172,13 @@ def check_end_state(
             state = GameState.IS_DRAW
     return state
     # raise NotImplementedError()
+
+
+class SavedState:
+    pass
+
+
+GenMove = Callable[
+    [np.ndarray, BoardPiece, Optional[SavedState]],  # Arguments for the generate_move function
+    Tuple[PlayerAction, Optional[SavedState]]  # Return type of the generate_move function
+]
